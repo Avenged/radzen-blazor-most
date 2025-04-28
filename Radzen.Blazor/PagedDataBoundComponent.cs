@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Radzen.Blazor;
 
 namespace Radzen
@@ -27,6 +28,18 @@ namespace Radzen
         /// <value><c>true</c> if pager is visible even when not enough data for paging otherwise, <c>false</c>.</value>
         [Parameter]
         public bool PagerAlwaysVisible { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this grid should get focus when it appears.
+        /// </summary>
+        [Parameter]
+        public bool FocusOnAppear { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether should auto scroll to top when page number is changed.
+        /// </summary>
+        [Parameter]
+        public bool AutoScrollToTop { get; set; }
 
         /// <summary>
         /// Gets or sets the horizontal align.
@@ -395,6 +408,10 @@ namespace Radzen
             if (firstRender)
             {
                 await ReloadOnFirstRender();
+                if (FocusOnAppear)
+                {
+                    await Focus();
+                }
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -442,6 +459,27 @@ namespace Radzen
             await Page.InvokeAsync(args);
 
             await InvokeAsync(Reload);
+
+            if (AutoScrollToTop)
+            {
+                await Focus();
+            }
+        }
+
+        private async Task Focus()
+        {
+            await JSRuntime.InvokeVoidAsync("eval",
+            $$"""
+            (function()
+            {
+                const element = document.getElementById('{{GetId()}}');
+                element.scrollIntoView({ 
+                    block: 'start', 
+                    inline: 'start',
+                    behavior: 'smooth',
+                });
+            })();
+            """);
         }
 
         internal int? pageSize;

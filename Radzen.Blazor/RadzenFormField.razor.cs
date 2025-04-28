@@ -2,6 +2,7 @@ using Radzen.Blazor.Rendering;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Radzen.Blazor
 {
@@ -18,6 +19,17 @@ namespace Radzen.Blazor
         /// Gets or sets a value indicating whether the label is floating or fixed on top.
         /// </summary>
         bool AllowFloatingLabel { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RadzenFormFieldSettings
+    {
+        /// <summary>
+        /// Gets or sets a value indicating whether the label is floating or fixed on top.
+        /// </summary>
+        public bool AllowFloatingLabel { get; set; } = true;
     }
 
     /// <summary>
@@ -138,6 +150,12 @@ namespace Radzen.Blazor
         /// <value>The variant of the form field.</value>
         [Parameter]
         public Variant Variant { get; set; } = Variant.Outlined;
+
+        /// <summary>
+        /// Settings for RadzenFormField.
+        /// </summary>
+        [Inject]
+        public IOptions<RadzenFormFieldSettings> Settings { get; set; }
 
         private bool disabled;
 
