@@ -177,6 +177,14 @@ namespace Radzen.Blazor
         }
 
         /// <inheritdoc />
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            AllowFloatingLabel = Settings.Value.AllowFloatingLabel;
+        }
+
+        /// <inheritdoc />
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
